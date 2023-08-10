@@ -1,0 +1,30 @@
+version: '3'
+services:
+  # Nginx server configuration
+  nginx:
+    image: nginx:stable-alpine3.17-slim
+    ports:
+      - "88:80"
+      - "4433:443"
+    volumes:
+      - ./hosts:/etc/nginx/conf.d
+      - ./logs/nginx:/var/log/nginx
+      - ./www:/var/www
+
+  # PHP-FPM configuration
+  php:
+    build: ./images/php/
+    volumes:
+      - ./www:/var/www
+
+  # MySql configuration
+  mysql:
+    image: mysql:8
+    restart: always
+    ports:
+      - "3309:3306"
+    volumes:
+      - ./mysql:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: root
+      MYSQL_ROOT_PASSWORD: password
